@@ -24,12 +24,13 @@ class GroovyDataSetReader implements DataSetReader {
     }
     
     DataSet read() {
-        return new DataSet(tables: parse(input));
+        def tables = parse(input)
+        return new DataSet(tables, tables.keySet() as List)
     }
         
     private Map<String, Table> parse(InputStream input) {
         
-        def tables = [:]
+        def tables = new LinkedHashMap()
         def lines = new LinkedList(input.readLines())
         
         while (!lines.empty) {
@@ -46,7 +47,7 @@ class GroovyDataSetReader implements DataSetReader {
         return tables
     }
     
-    private void execScript(text, tables) {
+    private static void execScript(text, tables) {
         GroovyShell shell = new GroovyShell()
         def script = shell.parse(text)
         

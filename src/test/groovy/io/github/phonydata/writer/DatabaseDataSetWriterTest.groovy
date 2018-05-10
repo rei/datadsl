@@ -12,24 +12,23 @@ class DatabaseDataSetWriterTest {
 
     @Test
     void canTopologicalSort() {
-        def sorted = DatabaseDataSetWriter.topologicalSort(a: [], b: [], c:[])
+        def sorted = DatabaseDataSetWriter.topologicalSort(a: [], b: [], c:[], ['b', 'c', 'a'])
         assertEquals(['a', 'b', 'c'], sorted)
         
-        sorted = DatabaseDataSetWriter.topologicalSort(a: ['b'], b: [], c:[])
+        sorted = DatabaseDataSetWriter.topologicalSort(a: ['b'], b: [], c:[], ['b', 'c', 'a'])
         assertEquals('b', sorted.first())
         
-        sorted = DatabaseDataSetWriter.topologicalSort(a: ['b'], b: ['c'], c:[])
+        sorted = DatabaseDataSetWriter.topologicalSort(a: ['b'], b: ['c'], c:[], ['b', 'c', 'a'])
         assertEquals(['c', 'b', 'a'], sorted)
         
-        sorted = DatabaseDataSetWriter.topologicalSort(a: [], b: ['c', 'a'], c:['a'])
+        sorted = DatabaseDataSetWriter.topologicalSort(a: [], b: ['c', 'a'], c:['a'], ['b', 'c', 'a'])
         assertEquals(['a', 'c', 'b'], sorted)
+
+        // falls back to declaration order if cycle exists
+        sorted = DatabaseDataSetWriter.topologicalSort(a: [], b: ['a'], c: ['d'], d:['c'], ['b', 'a', 'c', 'd'])
+        assertEquals(['a', 'b', 'c', 'd'], sorted)
     }
 
-    @Test(expected=RuntimeException)
-    void disallowsSortingCyclicalGraph() {
-        DatabaseDataSetWriter.topologicalSort(a: ['b'], b: ['c'], c:['a'])
-    }
-    
     @Test
     void canInsertSimpleDataSet() {
         def ds = new GroovyDataSetReader("keys(id:1, key: 'unlocksaysme')").read()

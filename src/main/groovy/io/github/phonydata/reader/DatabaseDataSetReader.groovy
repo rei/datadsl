@@ -22,14 +22,14 @@ class DatabaseDataSetReader implements DataSetReader {
         this.tablesToImport = new HashSet(tablesToImport)
     }
     
-    public DataSet read() {
+    DataSet read() {
         if (!tablesToImport) {
             tablesToImport = findAllTables()
         }
         
         def queries = tablesToImport.collectEntries { [it, "select * from $it".toString()] }
         
-        def dataSet = new DataSet(tables: [:])
+        def dataSet = new DataSet([:], tablesToImport as List)
         
         def sql = new Sql(ds)
         sql.withBatch { 

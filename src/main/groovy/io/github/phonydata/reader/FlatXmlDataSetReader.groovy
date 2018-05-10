@@ -21,12 +21,13 @@ class FlatXmlDataSetReader implements DataSetReader {
         this.input = input
     }
     
-    public DataSet read() {
-        return new DataSet(tables: parse(input));
+    DataSet read() {
+        def tables = parse(input)
+        return new DataSet(tables, tables.keySet() as List)
     }
 
     private Map<String, Table> parse(InputStream input) {
-        def tables = [:]
+        def tables = new LinkedHashMap()
         
         def getTable = { name ->
             if (!tables[name]) {

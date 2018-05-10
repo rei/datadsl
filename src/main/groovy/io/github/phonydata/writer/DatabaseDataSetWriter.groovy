@@ -24,9 +24,9 @@ class DatabaseDataSetWriter implements DataSetWriter {
         this.clean = clean
     }
     
-    public void write(DataSet ds) {
+    void write(DataSet ds) {
         def fks = findForeignKeys(ds.tables.keySet())
-        def sortedTables = topologicalSort(fks)
+        def sortedTables = topologicalSort(fks, ds.tableOrder)
         def originalNames = ds.tables.keySet().collectEntries { [it.toLowerCase(), it] }
         
         sql.withTransaction{
@@ -65,19 +65,27 @@ class DatabaseDataSetWriter implements DataSetWriter {
         return quote + s.toUpperCase() + quote
     }
     
-    static def topologicalSort(Map fks) {
+    static def topologicalSort(Map fks, List<String> fallbackOrder) {
         def sorted = []
         def counter = fks.size()
         while (!fks.isEmpty()) {
             if (counter-- < 0) { //TODO: consider warning then just throwing the rest in the sorted list
-                logger.error("unable to sort dataset with circular table references: {}", fks)
-                throw new IllegalStateException("unable to topologically sort cyclical table references!")
+                logger.warn("unable to completely sort dataset with circular table references: {}, falling back on table order {}", fks, fallbackOrder)
+                break
             }
             def unReferenced = fks.findAll { t, refs -> refs.isEmpty() }.keySet()
             sorted.addAll(unReferenced)
-            unReferenced.each { fks.remove(it) }
+            unReferenced.each {
+                fks.remove(it)
+                fallbackOrder.remove(it)
+            }
             fks.each { t, refs -> refs.removeAll(unReferenced) }
         }
+
+        if (!fks.isEmpty()) {
+            sorted.addAll(fallbackOrder)
+        }
+
         return sorted
     }
     
