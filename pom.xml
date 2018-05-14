@@ -13,13 +13,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.sonatype.oss</groupId>
+		<groupId>com.rei.oss</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>9</version>
+		<version>1</version>
 	</parent>
 
-	<groupId>io.github.phonydata</groupId>
-	<artifactId>phonydata</artifactId>
+	<groupId>com.rei.datadsl</groupId>
+	<artifactId>datadsl</artifactId>
 	<version>${revision}</version>
 
     <properties>
@@ -27,14 +27,14 @@
         <slf4j.version>1.7.7</slf4j.version>
     </properties>
 
-	<url>http://jeffskj.github.io/phonydata</url>
-	<description>A fake data library</description>
+	<url>https://github.com/rei/datadsl</url>
+	<description>A library for defining datasets for testing, mocking, or development</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>2.4.3</version>
+			<version>2.4.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -68,18 +68,6 @@
 	       </resource>
 	    </resources>
 		<plugins>
-		    <plugin>
-                <groupId>io.github.jeffskj.cdversions</groupId>
-                <artifactId>cd-versions-maven-plugin</artifactId>
-                <version>0.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate-release-pom</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
@@ -123,15 +111,6 @@
 	            </executions>
 	        </plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-gpg-plugin</artifactId>
-					<version>1.5</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 
 	<licenses>
@@ -144,16 +123,16 @@
 	<developers>
 		<developer>
 			<name>Jeff Skjonsby</name>
-			<email>jeff_skj@hotmail.com</email>
-			<organization>none</organization>
-			<organizationUrl>https://github.com/jeffskj</organizationUrl>
+			<email>jskjons@rei.com</email>
+			<organization>REI</organization>
+			<organizationUrl>https://github.com/rei</organizationUrl>
 		</developer>
 	</developers>
 
 	<scm>
-		<connection>scm:git:git@github.com:jeffskj/phonydata.git</connection>
-		<developerConnection>scm:git:git@github.com:jeffskj/phonydata.git</developerConnection>
-		<url>git@github.com:jeffskj/phonydata.git</url>
+		<connection>scm:git:git@github.com:rei/datadsl.git</connection>
+		<developerConnection>scm:git:git@github.com:rei/datadsl.git</developerConnection>
+		<url>git@github.com:rei/datadsl.git</url>
 	</scm>
 
 </project>

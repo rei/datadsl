@@ -52,10 +52,10 @@ Usage Example
 
     DataSource datasource = ... // get reference to JDBC DataSource
     def dataset = getClass().classLoader.getResourceAsStream('/path/to/dataset') // may also be a String
-    PhonyData.from(dataset).into(datasource) // reads data from groovy dataset and writes to datasource
+    DataDsl.from(dataset).into(datasource) // reads data from groovy dataset and writes to datasource
 
     // reads the data from specified tables and writes a groovy dataset to output stream
-    PhonyData.from(datasource, ['table1','table2']).into(new File('/some/file').newOutputStream())
+    DataDsl.from(datasource, ['table1','table2']).into(new File('/some/file').newOutputStream())
 
 
 Inline Groovy Example
@@ -63,7 +63,7 @@ Inline Groovy Example
 
      @Before
      public void setup() {
-        PhonyData.from {
+        DataDsl.from {
             people(name: 'Jane Doe')
             address(street: '123 main st')
         }.into(dataSource)
