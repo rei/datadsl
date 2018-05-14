@@ -1,9 +1,7 @@
-PhonyData
-=========
+DataDSL
+=======
 
-[![Build Status](https://travis-ci.org/jeffskj/phonydata.svg?branch=master)](https://travis-ci.org/jeffskj/phonydata)
-
-PhonyData is a library to import and export test datasets for things like unit testing databases or local dev data.
+DataDSL is a library to import and export test datasets for things like unit testing databases or local dev data.
 
 Features
 --------
@@ -11,7 +9,7 @@ Features
   * Clear, consise groovy based DSL to define datasets
   * Can both import and export data
   * Automatically escapes sql keywords
-  * Automatically topologically sorts tables with foreign keys
+  * Automatically topologically sorts tables with foreign keys (falls back on table declaration order within dataset)
   * Auto column sensing
   * Specify default column values
   * ID auto generation
@@ -19,6 +17,7 @@ Features
   * Define dataset inline in groovy tests
   * Concise builder pattern to import/export data
   * Reads DBUnit FlatXml datasets for compatibility
+  * Automatically detects column casing of quoted column and tables
 
 DSL Overview
 ------------
@@ -76,7 +75,11 @@ Get It!
 Add this dependency to your project:
 
     <dependency>
-       <groupId>io.github.phonydata</groupId>
-       <artifactId>phonydata</artifactId>
-       <version>0.4</version>
+       <groupId>com.rei.datadsl</groupId>
+       <artifactId>datadsl</artifactId>
+       <version>1.0</version>
     </dependency>
+
+NOTE:
+
+This is a fork/rebrand of https://github.com/jeffskj/phonydata by the original author. 

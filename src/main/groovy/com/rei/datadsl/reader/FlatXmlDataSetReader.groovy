@@ -1,0 +1,75 @@
+package com.rei.datadsl.reader
+
+import com.rei.datadsl.DataSet
+import com.rei.datadsl.Table
+
+import java.text.ParseException
+
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+class FlatXmlDataSetReader implements DataSetReader {
+    private Logger logger = LoggerFactory.getLogger(getClass())
+    
+    private InputStream input;
+    
+    FlatXmlDataSetReader(String text) {
+        this(new ByteArrayInputStream(text.bytes))
+    }
+    
+    FlatXmlDataSetReader(InputStream input) {
+        this.input = input
+    }
+    
+    DataSet read() {
+        def tables = parse(input)
+        return new DataSet(tables, tables.keySet() as List)
+    }
+
+    private Map<String, Table> parse(InputStream input) {
+        def tables = new LinkedHashMap()
+        
+        def getTable = { name ->
+            if (!tables[name]) {
+                tables[name] = new Table(name: name)
+            }
+            return tables[name]
+        }
+        
+        def xml = new XmlSlurper().parse(input)
+        
+        xml.children().each {
+            getTable(it.name()).addRow(it.attributes().collectEntries { n, v -> [n, convert(v)] })
+        }
+        
+        logger.info ("read flatxml dataset with {} tables and {} total rows", tables.size(), tables.values().sum { it.rows.size() })
+        
+        return tables
+    }
+    
+    private def convert(input) {
+        def dateFormats = ['yyyy-MM-dd HH:mm:ss.SSSS': java.sql.Timestamp,
+                           'yyyy-MM-dd': java.sql.Date,
+                           'hh:mm:ss': java.sql.Time]
+        
+        def parsedDate = dateFormats.collect { format, type -> 
+            try {
+                return type.newInstance(Date.parse(format, input).time)
+            } catch (ParseException e) {
+                return null
+            }
+        }.find { it != null }
+        
+        if (parsedDate != null) return parsedDate
+        
+        if (input ==~ /-?\d+/) {
+            return Long.parseLong(input)
+        }
+        
+        if (input ==~ /-?\d+\.\d+/) {
+            return Double.parseDouble(input)
+        }
+        
+        return input
+    }
+}
