@@ -11,41 +11,41 @@ import org.junit.Test
 class DataDslTest {
 
     @Test
-    public void testFromClosure() {
+    void testFromClosure() {
         assertDataWritten(DataDsl.from { table1(col1:'blah') }.andFrom((String)null))
     }
 
     @Test
-    public void testFromString() {
+    void testFromString() {
         assertDataWritten(DataDsl.from("table1(col1:'blah')").andFrom { table1(col2: 'blah') })
     }
 
     @Test
-    public void testFromInputStream() {
+    void testFromInputStream() {
         assertDataWritten(DataDsl.from(new ByteArrayInputStream("table1(col1:'blah')".bytes)))
     }
 
     @Test
-    public void testFromXmlString() {
+    void testFromXmlString() {
         assertDataWritten(DataDsl.fromXml('<dataset><table1 col="val"/></dataset>'))
     }
 
     @Test
-    public void testFromXmlInputStream() {
+    void testFromXmlInputStream() {
         assertDataWritten(DataDsl.fromXml(new ByteArrayInputStream('<dataset><table1 col="val"/></dataset>'.bytes)))
     }
 
     @Test
-    public void canReadFromDb() {
+    void canReadFromDb() {
         def ds = createDataSource()
         def sql = new Sql(ds)
         sql.executeUpdate("create table testing(col varchar(255))")
         sql.executeInsert("insert into testing (col) values ('value')")
         assertDataWritten(DataDsl.from(ds, ['testing']))
     }
-    
+
     @Test
-    public void canWriteToDb() {
+    void canWriteToDb() {
         def ds = createDataSource()
         def sql = new Sql(ds)
         sql.executeUpdate("create table testing(col varchar(255))")

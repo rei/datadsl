@@ -8,17 +8,18 @@ import java.sql.ResultSet
 
 import javax.sql.DataSource
 
-class DatabaseDataSetReader implements DataSetReader {
+import com.rei.datadsl.db.DatabaseDataSetHandler
 
-    private DataSource ds
-    private Set<String> tablesToImport 
+class DatabaseDataSetReader extends DatabaseDataSetHandler implements DataSetReader {
+
+    private Set<String> tablesToImport
     
     DatabaseDataSetReader(DataSource ds) {
-        this.ds = ds
+        super(new Sql(ds))
     }
     
     DatabaseDataSetReader(DataSource ds, Collection<String> tablesToImport) {
-        this.ds = ds
+        super(new Sql(ds))
         this.tablesToImport = new HashSet(tablesToImport)
     }
     
@@ -31,8 +32,7 @@ class DatabaseDataSetReader implements DataSetReader {
         
         def dataSet = new DataSet([:], tablesToImport as List)
         
-        def sql = new Sql(ds)
-        sql.withBatch { 
+        sql.withBatch {
             queries.each { tableName, query ->
                 Table table = new Table(name: tableName)
                 
@@ -43,20 +43,22 @@ class DatabaseDataSetReader implements DataSetReader {
                 dataSet.tables[tableName] = table
             }
         }
-        
+
+        discoverMetadata(dataSet)
+
         return dataSet;
     }
     
     private Set<String> findAllTables() {
-        def conn = ds.connection
-        ResultSet rs = conn.metaData.getTables(conn.catalog, conn.schema, "%", null);
-        
-        def tables = [] as Set 
-        
-        while (rs.next()) {
-          tables << rs.getString(3)
+        def tables = [] as Set
+        sql.cacheConnection {conn ->
+            ResultSet rs = conn.metaData.getTables(conn.catalog, conn.schema, "%", null);
+
+            while (rs.next()) {
+                tables << rs.getString(3)
+            }
+
         }
-        
         return tables
     }
 }

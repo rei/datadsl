@@ -1,6 +1,11 @@
 target/
-.settings
-.classpath
+.DS_STORE
 .project
-.idea/
+.settings/
+.classpath
+.factorypath
+.idea
+*.iml
 release.pom
+build/
+.gradle/

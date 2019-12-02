@@ -11,7 +11,7 @@ import org.junit.Test
 class DatabaseDataSetReaderTest {
 
     @Test
-    public void canParseDataSet() {
+    void canParseDataSet() {
         def dataSource = createDataSource()
         
         def sql = new Sql(dataSource)
@@ -36,20 +36,12 @@ class DatabaseDataSetReaderTest {
         assertEquals(2, ds.tables.size())
         assertEquals(100, ds.tables.people.size())
         assertEquals(100, ds.tables.address.size())
+        assertEquals(1, ds.tables['address'].foreignKeys.size())
+        assertEquals(ds.tables['people'], ds.tables['address'].foreignKeys.first())
+
     }
     
     private DataSource createDataSource() {
         return JdbcConnectionPool.create("jdbc:h2:mem:test${UUID.randomUUID()};DB_CLOSE_DELAY=-1", "sa", "sa").dataSource
     }
-    
-    private def complexDataSet = '''
-address.id('id')
-people.id('id')
-
-100.times { n ->
-    def person = people(name: 'joe blow' + n)
-    address(street: "$n main st".toString(), city: 'seattle', state: 'wa', person: person)
-    address(street: "$n oak st".toString(), city: 'seattle', state: 'wa', person: person)    
-}
-'''
 }
