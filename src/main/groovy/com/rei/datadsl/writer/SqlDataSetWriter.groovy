@@ -10,7 +10,7 @@ import com.rei.datadsl.Row
 import com.rei.datadsl.Table
 
 class SqlDataSetWriter implements DataSetWriter {
-    private static final DATE_FORMAT = 'yyyyMMddHHddmmssSSSS'
+    private static final DATE_FORMAT = 'yyyyMMddHHmmssSSSS'
     private Logger logger = LoggerFactory.getLogger(getClass())
 
     private PrintWriter out;

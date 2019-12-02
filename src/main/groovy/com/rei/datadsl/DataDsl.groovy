@@ -10,6 +10,8 @@ import com.rei.datadsl.writer.GroovyDataSetWriter
 
 import javax.sql.DataSource
 
+import com.rei.datadsl.writer.SqlDataSetWriter
+
 class DataDsl {
 
     private List<DataSetReader> readers
@@ -92,6 +94,13 @@ class DataDsl {
     void into(OutputStream dest) {
         readers.each { reader ->
             def writer = new GroovyDataSetWriter(dest)
+            writer.write(reader.read())
+        }
+    }
+
+    void intoSql(OutputStream dest) {
+        readers.each { reader ->
+            def writer = new SqlDataSetWriter(dest)
             writer.write(reader.read())
         }
     }
